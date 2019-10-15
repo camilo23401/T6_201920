@@ -56,5 +56,8 @@ public class NodoArbol <K,V>
 	{
 		valor = pValor;
 	}
+	public void cambiarTamańo(Short pTamanio)
+	{
+		tamanio = pTamanio;
+	}
 }
-

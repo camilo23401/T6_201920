@@ -1,5 +1,13 @@
 package model.logic;
 
+import java.io.FileReader;
+import java.io.IOException;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import model.data_structures.ArregloDinamico;
 import model.data_structures.IArregloDinamico;
 
@@ -19,7 +27,7 @@ public class MVCModelo
 	 */
 	public MVCModelo()
 	{
-		datos = new ArregloDinamico(7);
+		
 	}
 	
 	/**
@@ -28,7 +36,50 @@ public class MVCModelo
 	 */
 	public MVCModelo(int capacidad)
 	{
-		datos = new ArregloDinamico(capacidad);
+		
+	}
+	public void cargarInfoZonas() throws IOException
+	{
+		FileReader lector = new FileReader("data/bogota_cadastral.json");
+		Object aux = JsonParser.parseReader(lector);
+		JsonObject json = (JsonObject) aux;
+		JsonElement elementoJson = json.get("features");
+		JsonArray zonas = elementoJson.getAsJsonArray();
+		for(int i=0; i<zonas.size();i++)
+		{
+			JsonElement elementoActual = zonas.get(i);
+			JsonObject objeto = elementoActual.getAsJsonObject();
+			JsonElement geometry = objeto.get("geometry");
+			JsonObject x = geometry.getAsJsonObject();
+			JsonElement posicion = x.get("coordinates");
+			JsonArray arregloCoordenadas = posicion.getAsJsonArray();
+			JsonArray primera = arregloCoordenadas.get(0).getAsJsonArray();
+			JsonArray complementoPrimera = primera.get(0).getAsJsonArray();
+			JsonElement lectorProperties = objeto.get("properties");
+			JsonObject properties = lectorProperties.getAsJsonObject();
+			JsonElement id = properties.get("MOVEMENT_ID");
+			int idNum = id.getAsInt();
+			JsonElement nombreZonal = properties.get("scanombre");
+			String nombre = nombreZonal.getAsString();
+			JsonElement lengArchivo = properties.get("shape_leng");
+			double leng = lengArchivo.getAsDouble();
+			JsonElement areaArchivo = properties.get("shape_area");
+			double area = areaArchivo.getAsDouble();
+
+			ZonaUber nueva = new ZonaUber(idNum, nombre, leng, area);
+			//zonasUber.agregar(nueva);
+			for(JsonElement accesoSegunda : complementoPrimera)
+			{
+				JsonArray segunda = accesoSegunda.getAsJsonArray();
+				double longitud = segunda.get(0).getAsDouble();
+				double latitud = segunda.get(1).getAsDouble();
+				Coordenadas actual = new Coordenadas(latitud, longitud);
+				nueva.meterCoordenadas(actual);
+			}
+			//System.out.println(nueva.coordenadas.darElementoPos(0).darLongitud() + "  " + nueva.coordenadas.darElementoPos(0).darLatitud());
+
+		}
+		//System.out.println("El número de zonas encontradas al cargar el archivo identificador de estas fue: "+zonasUber.darTamano());
 	}
 
 }
