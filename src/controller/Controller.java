@@ -36,6 +36,15 @@ public class Controller {
 			int option = lector.nextInt();
 			switch(option){
 				case 1:
+					try
+					{
+						modelo.cargarInfoZonas();
+							
+					}
+					catch(Exception e)
+					{
+						e.getMessage();
+					}
 					break;
 				case 6: 
 					System.out.println("--------- \n Hasta pronto !! \n---------"); 

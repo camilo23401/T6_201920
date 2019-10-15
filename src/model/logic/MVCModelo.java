@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import model.data_structures.ArbolRojoNegro;
 import model.data_structures.ArregloDinamico;
 import model.data_structures.IArregloDinamico;
 
@@ -20,24 +21,20 @@ public class MVCModelo
 	/**
 	 * Atributos del modelo del mundo
 	 */
-	private IArregloDinamico datos;
+	private ArbolRojoNegro<Integer, String> arbolDatos;
 	
 	/**
 	 * Constructor del modelo del mundo con capacidad predefinida
 	 */
 	public MVCModelo()
 	{
-		
+		arbolDatos = new ArbolRojoNegro<Integer, String>();
 	}
 	
 	/**
 	 * Constructor del modelo del mundo con capacidad dada
 	 * @param tamano
 	 */
-	public MVCModelo(int capacidad)
-	{
-		
-	}
 	public void cargarInfoZonas() throws IOException
 	{
 		FileReader lector = new FileReader("data/bogota_cadastral.json");
@@ -67,7 +64,7 @@ public class MVCModelo
 			double area = areaArchivo.getAsDouble();
 
 			ZonaUber nueva = new ZonaUber(idNum, nombre, leng, area);
-			//zonasUber.agregar(nueva);
+			arbolDatos.put(nueva.MOVEMENT_ID, nueva.scanombre+","+nueva.shape_leng+","+nueva.shape_area+nueva.darCantidadCordenadas());
 			for(JsonElement accesoSegunda : complementoPrimera)
 			{
 				JsonArray segunda = accesoSegunda.getAsJsonArray();
@@ -76,10 +73,8 @@ public class MVCModelo
 				Coordenadas actual = new Coordenadas(latitud, longitud);
 				nueva.meterCoordenadas(actual);
 			}
-			//System.out.println(nueva.coordenadas.darElementoPos(0).darLongitud() + "  " + nueva.coordenadas.darElementoPos(0).darLatitud());
-
 		}
-		//System.out.println("El número de zonas encontradas al cargar el archivo identificador de estas fue: "+zonasUber.darTamano());
+		System.out.println("El número de zonas encontradas al cargar el archivo identificador de estas fue: "+arbolDatos.size());
 	}
 
 }
