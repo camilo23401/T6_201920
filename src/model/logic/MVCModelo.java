@@ -2,6 +2,7 @@ package model.logic;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Iterator;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -42,6 +43,8 @@ public class MVCModelo
 		JsonObject json = (JsonObject) aux;
 		JsonElement elementoJson = json.get("features");
 		JsonArray zonas = elementoJson.getAsJsonArray();
+		int menor=0;
+		int mayor=0;
 		for(int i=0; i<zonas.size();i++)
 		{
 			JsonElement elementoActual = zonas.get(i);
@@ -56,6 +59,9 @@ public class MVCModelo
 			JsonObject properties = lectorProperties.getAsJsonObject();
 			JsonElement id = properties.get("MOVEMENT_ID");
 			int idNum = id.getAsInt();
+			mayor=(idNum>mayor)?mayor=idNum:mayor;
+			menor=(i==0)?menor=idNum:menor;
+			menor=(menor>idNum)?menor=idNum:menor;
 			JsonElement nombreZonal = properties.get("scanombre");
 			String nombre = nombreZonal.getAsString();
 			JsonElement lengArchivo = properties.get("shape_leng");
@@ -64,7 +70,6 @@ public class MVCModelo
 			double area = areaArchivo.getAsDouble();
 
 			ZonaUber nueva = new ZonaUber(idNum, nombre, leng, area);
-			arbolDatos.put(nueva.MOVEMENT_ID, nueva.scanombre+","+nueva.shape_leng+","+nueva.shape_area+nueva.darCantidadCordenadas());
 			for(JsonElement accesoSegunda : complementoPrimera)
 			{
 				JsonArray segunda = accesoSegunda.getAsJsonArray();
@@ -73,8 +78,29 @@ public class MVCModelo
 				Coordenadas actual = new Coordenadas(latitud, longitud);
 				nueva.meterCoordenadas(actual);
 			}
+			arbolDatos.put(nueva.MOVEMENT_ID, nueva.scanombre+","+nueva.shape_leng+","+nueva.shape_area+","+nueva.darCantidadCordenadas());
+			
 		}
 		System.out.println("El número de zonas encontradas al cargar el archivo identificador de estas fue: "+arbolDatos.size());
+		System.out.println("El valor maximo de ID fue "+ mayor);
+		System.out.println("El valor minimo de ID fue "+ menor);
 	}
+	
+	
+	public String buscarZonaPorId(String buscada) {
+		String datos="";
+		datos=arbolDatos.get(Integer.parseInt(buscada));
+		return datos;
+	}
+	
+	public Iterator<String> buscarZonaPorIdRango(String inferior,String superior) {
+		if(Integer.parseInt(superior)<Integer.parseInt(inferior)||Integer.parseInt(inferior)>Integer.parseInt(superior)||Integer.parseInt(inferior)<0||Integer.parseInt(superior)>arbolDatos.size()) {
+			System.out.println("Los datos no fueron ingresados correctamente");
+		}
+		Iterator<String>retorno=arbolDatos.valuesInRange(Integer.parseInt(inferior), Integer.parseInt(superior));
+		
+		return retorno;
+	}
+	
 
 }

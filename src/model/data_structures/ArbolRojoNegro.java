@@ -107,7 +107,7 @@ public class ArbolRojoNegro <K extends Comparable<K>, V>
 			intercambiarColores(pNodo);
 		}
 		int nuevoTamanio = sizeAux(pNodo.darNodoDerecha()) + sizeAux(pNodo.darNodoIzquierda()) + 1;
-		pNodo.cambiarTamańo((short) nuevoTamanio);
+		pNodo.cambiarTamanio((short) nuevoTamanio);
 		return pNodo;
 	}
 	public boolean isRed(NodoArbol<K, V> pNodo)
@@ -125,9 +125,9 @@ public class ArbolRojoNegro <K extends Comparable<K>, V>
 		aux.cambiarNodoDerecha(pNodo);
 		aux.cambiarColor(pNodo.darColor());
 		pNodo.cambiarColor(RED);
-		aux.cambiarTamańo(pNodo.darTamanio());
+		aux.cambiarTamanio(pNodo.darTamanio());
 		short nuevoTamanio = (short) (sizeAux(pNodo.darNodoIzquierda())+sizeAux(pNodo.darNodoDerecha())+1);
-		pNodo.cambiarTamańo(nuevoTamanio);
+		pNodo.cambiarTamanio(nuevoTamanio);
 		return aux;
 	}
 	public NodoArbol<K, V> rotarIzquierda(NodoArbol<K, V> pNodo)
@@ -137,9 +137,9 @@ public class ArbolRojoNegro <K extends Comparable<K>, V>
 		aux.cambiarNodoIzquierda(pNodo);
 		aux.cambiarColor(pNodo.darColor());
 		pNodo.cambiarColor(RED);
-		aux.cambiarTamańo(pNodo.darTamanio());
+		aux.cambiarTamanio(pNodo.darTamanio());
 		short nuevoTamanio = (short) (sizeAux(pNodo.darNodoIzquierda())+sizeAux(pNodo.darNodoDerecha())+1);
-		pNodo.cambiarTamańo(nuevoTamanio);
+		pNodo.cambiarTamanio(nuevoTamanio);
 		return aux;
 	}
 	public void intercambiarColores(NodoArbol<K, V> pNodo)
@@ -262,65 +262,24 @@ public class ArbolRojoNegro <K extends Comparable<K>, V>
 			return leftKeys(pNodo.darNodoDerecha());
 		}
 	}
-	public Iterator<K> keysInRange(K pLlaveBaja, K pLlaveAlta)
-	{
-		Stack<K> stack = new Stack<K>();
-		if(pLlaveAlta.compareTo(raiz.darLlave())<0)
-		{
-			boolean encontradoLimite = false;
-			Stack<K> llaves = leftKeys(raiz);
-			for(int i=0;i<llaves.darTamanio()&&!encontradoLimite;i++)
-			{
-				K llave = llaves.pop();
-				if(llave.compareTo(pLlaveBaja)<0)
-				{
-					encontradoLimite = true;
-				}
-				if(llave.compareTo(pLlaveBaja)>=0)
-				{
-					stack.push(llave);
-				}
-			}
-		}
-		else if(pLlaveAlta.compareTo(raiz.darLlave())>0)
-		{
-			boolean encontradoLimite = false;
-			Stack<K> llaves = rightKeys(raiz);
-			for(int i=0;i<llaves.darTamanio()&&!encontradoLimite;i++)
-			{
-				K llave = llaves.pop();
-				if(llave.compareTo(pLlaveBaja)<0)
-				{
-					encontradoLimite = true;
-				}
-				if(llave.compareTo(pLlaveBaja)>=0)
-				{
-					stack.push(llave);
-				}		
-			}
-		}
-		else if(pLlaveAlta.compareTo(raiz.darLlave())==0)
-		{
-			boolean encontradoLimite = false;
-			Iterator<K> llavess = keys();
-			while(llavess.hasNext()&&!encontradoLimite)
-			{
-				K llaveaux = llavess.next();
-				if(llaveaux.compareTo(pLlaveBaja)<0)
-				{
-					encontradoLimite = true;
-				}
-				if(llaveaux.compareTo(pLlaveBaja)>=0)
-				{
-					stack.push(llaveaux);
-				}		
-			}
-		}
-		return stack.iterator();
-	}
+	 public Iterator<K> keys(K lo, K hi) {
+	        if (lo == null) throw new IllegalArgumentException("No valido");
+	        if (hi == null) throw new IllegalArgumentException("No valido");
+	        Stack<K> stack = new Stack<K>();
+	        keys(raiz, stack, lo, hi);
+	        return stack.iterator();
+	    } 
+	 private void keys(NodoArbol<K,V> x, Stack<K> stack, K lo, K hi) { 
+	        if (x == null) return; 
+	        int cmplo = lo.compareTo(x.darLlave()); 
+	        int cmphi = hi.compareTo(x.darLlave()); 
+	        if (cmplo < 0) keys(x.darNodoIzquierda(), stack, lo, hi); 
+	        if (cmplo <= 0 && cmphi >= 0) stack.push(x.darLlave()); 
+	        if (cmphi > 0) keys(x.darNodoDerecha(), stack, lo, hi); 
+	    } 
 	public Iterator<V> valuesInRange(K pLlaveBaja, K pLlaveAlta)
 	{
-		Iterator<K> llaves = keysInRange(pLlaveBaja, pLlaveAlta);
+		Iterator<K> llaves = keys(pLlaveBaja, pLlaveAlta);
 		Stack<V> valoresEnRango = new Stack<V>();
 		while(llaves.hasNext())
 		{
