@@ -262,20 +262,20 @@ public class ArbolRojoNegro <K extends Comparable<K>, V>
 			return leftKeys(pNodo.darNodoDerecha());
 		}
 	}
-	 public Iterator<K> keys(K lo, K hi) {
-	        if (lo == null) throw new IllegalArgumentException("No valido");
-	        if (hi == null) throw new IllegalArgumentException("No valido");
+	 public Iterator<K> keys(K pLimiteInferior, K pLimiteSuperior) {
+	        if (pLimiteInferior == null) throw new IllegalArgumentException("No valido");
+	        if (pLimiteSuperior == null) throw new IllegalArgumentException("No valido");
 	        Stack<K> stack = new Stack<K>();
-	        keys(raiz, stack, lo, hi);
+	        keys(raiz, stack, pLimiteInferior, pLimiteSuperior);
 	        return stack.iterator();
 	    } 
-	 private void keys(NodoArbol<K,V> x, Stack<K> stack, K lo, K hi) { 
-	        if (x == null) return; 
-	        int cmplo = lo.compareTo(x.darLlave()); 
-	        int cmphi = hi.compareTo(x.darLlave()); 
-	        if (cmplo < 0) keys(x.darNodoIzquierda(), stack, lo, hi); 
-	        if (cmplo <= 0 && cmphi >= 0) stack.push(x.darLlave()); 
-	        if (cmphi > 0) keys(x.darNodoDerecha(), stack, lo, hi); 
+	 private void keys(NodoArbol<K,V> pNodoArbol, Stack<K> pStack, K pLimiteInferior, K pLimiteSuperior) { 
+	        if (pNodoArbol == null) return; 
+	        int cmplo = pLimiteInferior.compareTo(pNodoArbol.darLlave()); 
+	        int cmphi = pLimiteSuperior.compareTo(pNodoArbol.darLlave()); 
+	        if (cmplo < 0) keys(pNodoArbol.darNodoIzquierda(), pStack, pLimiteInferior, pLimiteSuperior); 
+	        if (cmplo <= 0 && cmphi >= 0) pStack.push(pNodoArbol.darLlave()); 
+	        if (cmphi > 0) keys(pNodoArbol.darNodoDerecha(), pStack, pLimiteInferior, pLimiteSuperior); 
 	    } 
 	public Iterator<V> valuesInRange(K pLlaveBaja, K pLlaveAlta)
 	{

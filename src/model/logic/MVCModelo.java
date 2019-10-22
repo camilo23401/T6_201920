@@ -78,8 +78,7 @@ public class MVCModelo
 				Coordenadas actual = new Coordenadas(latitud, longitud);
 				nueva.meterCoordenadas(actual);
 			}
-			arbolDatos.put(nueva.MOVEMENT_ID, nueva.scanombre+","+nueva.shape_leng+","+nueva.shape_area+","+nueva.darCantidadCordenadas());
-			
+			arbolDatos.put(nueva.MOVEMENT_ID, nueva.scanombre+","+nueva.shape_leng+","+nueva.shape_area+","+nueva.darCantidadCordenadas());	
 		}
 		System.out.println("El número de zonas encontradas al cargar el archivo identificador de estas fue: "+arbolDatos.size());
 		System.out.println("El valor maximo de ID fue "+ mayor);
